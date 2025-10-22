@@ -1,0 +1,12 @@
+
+<launch>
+    <!-- Set up the path -->
+    <arg name="yolo_env" default="$(find yolo_detection)/config/yolo_config.yaml"/>
+    <!-- Start the node and load param privately for this node -->
+    <node pkg="yolo_detection" type="yolo_detection.py" name="yolo_detection" output="screen">
+        <!-- Load rosparam from the file -->
+        <rosparam command="load" file="$(arg yolo_env)"/>
+        <remap from="/image_input" to="/camera/image/compressed"/>
+        <param name="weights" value="$(find yolo_detection)/models/best.pt"/>
+    </node>
+</launch>
