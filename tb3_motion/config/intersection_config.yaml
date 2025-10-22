@@ -1,0 +1,9 @@
+turn_in: 25
+move_in: 0.3
+right_turn_in: 76 
+left_turn_in: 78
+move_right: 0.3
+move_left: 0.3
+move_right_out: 0.6
+turn_right_out: 90
+move_intersection_out: 0.24

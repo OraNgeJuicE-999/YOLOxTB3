@@ -1,0 +1,8 @@
+turn1: 35 
+move1: 1
+turn2: 70
+move2: 1.2
+turn3: 50
+move3: 0.2
+threshold_distance: 0.3
+angle_scan: 5
