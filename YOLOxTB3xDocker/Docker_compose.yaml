@@ -1,0 +1,52 @@
+version: 3.9
+
+network:
+  yoloxtb3:
+    driver: bridge
+
+services: 
+  roscore:
+    image:  yellowandorange:bringup
+    network: [yoloxtb3]
+    environment:
+      - ROS_MASTER_URI=http://localhost
+    healthcheck:
+      test: ["CMD-SHELL", "rostopic list >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 8s
+      start_period: 30s
+      retries: 10
+    restart: unless-stopped
+
+  yolo:
+    image:  yellowandorange:yolo
+    network: [yoloxtb3]
+    environment:
+      - ROS_MASTER_URI=http://roscore:11311
+      - YOLO_DETECTION_CONFIG=/ws/config/yolo_detection_config.yaml
+      - PIGPIO_ADDR=host.docker.internal     # gpiozero PiGPIOFactory will use this
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /host/YOLOxTB3/config:/root/ws/config:ro
+    depends_on:
+      roscore:
+        condition: service_healthy
+    restart: unless-stopped
+
+  tb3:
+    image:  yellowandorange:motion
+    network: [yoloxtb3]
+    environment:
+      - ROS_MASTER_URI=http://roscore:11311
+      - DETECT_LANE_CONFIG=/ws/config/detect_lane_config.yaml
+      - CONTROL_LANE_CONFIG=/ws/config/control_lane_config.yaml
+      - INTERSECTION_CONFIG=/ws/config/intersection_config.yaml
+      - CONSTRUCTION_CONFIG=/ws/config/construction_config.yaml
+    volumes:
+      - /host/YOLOxTB3/config:/root/ws/config:ro
+    depends_on:
+      roscore:
+        condition: service_healthy
+    restart: unless-stopped
+    
