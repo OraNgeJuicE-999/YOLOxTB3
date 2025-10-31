@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  led-control:
+    build: .
+    container_name: led-control
+    network_mode: host   # simplifies ROS/topic testing and pigpio TCP
+    environment:
+      # Tell gpiozero to use pigpio factory and connect to host daemon.
+      GPIOZERO_PIN_FACTORY: pigpio
+      PIGPIO_ADDR: host.docker.internal
+      # Optional but helps ROS networking when using host mode:
+      ROS_MASTER_URI: http://127.0.0.1:11311
+      ROS_IP: 127.0.0.1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # maps to the host IP on Linux
+    restart: unless-stopped

@@ -1,0 +1,4 @@
+<launch>
+  <!-- roslaunch will start roscore automatically -->
+  <node pkg="led_control_pkg" type="led_control.py" name="led_control" output="screen" />
+</launch>
